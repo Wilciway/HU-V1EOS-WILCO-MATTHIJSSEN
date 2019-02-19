@@ -27,7 +27,7 @@ void speak(string  zin){
 int main(int argc, char **argv) {
     string lineInput;
 while (getline(cin,lineInput)) {
- // cout << lineInput<<endl ;
+
 speak(lineInput);
 }
 
