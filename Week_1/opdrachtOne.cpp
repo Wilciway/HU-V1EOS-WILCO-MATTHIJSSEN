@@ -10,20 +10,27 @@ void new_file()
 {
         cout<<"This is the new_file command!"<<endl;
 
+        //########## FILE CREATE ###############
         cout<<"File name?: ";
         string fileName;
-        cin>>fileName;
-        syscall(SYS_creat, fileName,00070);
+        cin >> fileName;
+        int fd= syscall(SYS_creat, fileName.c_str(),S_IRWXU );
+        syscall(SYS_close,fd);
         cout<<endl;
 
+        //########### FILE WRITE ##############
         cout<<"File contents?: "<<endl;
         string fileContent;
+        fd= syscall(SYS_open, fileName.c_str(), O_WRONLY);
         while(getline(cin,fileContent))
         {
-                //syscall(SYS_write)
+                fileContent+='\n';
+                syscall(SYS_write,fd, fileContent.c_str(), fileContent.size());
         }
+        syscall(SYS_close,fd);
         cin.clear();
 }
+
 
 void list()
 { std::cout << "LS" << std::endl; }
