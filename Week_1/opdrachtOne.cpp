@@ -33,13 +33,73 @@ void new_file()
 
 
 void list()
-{ std::cout << "LS" << std::endl; }
+{
+        pid_t childPIDorZero= syscall(SYS_fork);
+        if(childPIDorZero <0){
+                perror("fork() error");
+        }
+        else if(childPIDorZero !=0){
+                wait(NULL);
+        }
+        else{
+                execl("/bin/ls","ls","-la",NULL);
+        }
+}
 
-void find()
-{ std::cout << "FIND" << std::endl; }
+void find(){
+        //#################### INPUT ##################
+        string findQuery;
+        cout<<"Search ";
+        getline(cin,findQuery);
+
+        //################# INIT ####################
+        int fd[2];
+        pipe(fd);
+        pid_t pid=fork();
+
+        //################ PARENT PIPE #################
+        if(pid==0){
+                close(fd[0]);
+                dup2(fd[1],1);
+                close(fd[1]);
+                execlp("/usr/bin/find","find",".",NULL);
+        }
+
+        //################ CHILD PIPE ####################
+        else{
+                pid_t gpid= fork();
+
+                if(gpid==0){
+                        close(fd[1]);
+                        dup2(fd[0],0);
+                        close(fd[0]);
+                        execlp("/bin/grep","grep",findQuery.c_str(),NULL);
+                }
+                else{
+                        cout<<endl<<"pid "<<pid<<endl<<"gpid  "<<gpid<<endl;
+                        syscall(SYS_wait4, pid, NULL, NULL, NULL);
+                        syscall(SYS_wait4, gpid, NULL, NULL, NULL);
+                }
+        }
+}
+
 
 void python()
-{ std::cout << "PYTHON" << std::endl; }
+{
+  pid_t childPIDorZero= syscall(SYS_fork);
+        if(childPIDorZero <0){
+                perror("fork() error");
+        }
+        else if(childPIDorZero !=0){
+                wait(NULL);
+        }
+        else{
+                execl("/usr/bin/python","python",NULL);
+        }
+
+// std::cout << "PYTHON" << std::endl; }
+}
+
 
 void src()
 { int fd = syscall(SYS_open, "shell.cc", O_RDONLY, 0755); // Gebruik de SYS_open call om een bestand te openen.
