@@ -47,41 +47,39 @@ void list()
 }
 
 void find(){
-        //#################### INPUT ##################
+        cout<<"This is the find command!"<<endl;
+        cout<<"search: ";
         string findQuery;
-        cout<<"Search ";
         getline(cin,findQuery);
 
-        //################# INIT ####################
         int fd[2];
         pipe(fd);
         pid_t pid=fork();
 
-        //################ PARENT PIPE #################
         if(pid==0){
-                close(fd[0]);
+                syscall(SYS_close,fd[0]);
                 dup2(fd[1],1);
-                close(fd[1]);
+                //syscall(SYS_close,fd[1]);
                 execlp("/usr/bin/find","find",".",NULL);
         }
-
-        //################ CHILD PIPE ####################
         else{
                 pid_t gpid= fork();
 
                 if(gpid==0){
-                        close(fd[1]);
+                        syscall(SYS_close,fd[1]);
                         dup2(fd[0],0);
-                        close(fd[0]);
+                //      syscall(SYS_close,fd[0]);
                         execlp("/bin/grep","grep",findQuery.c_str(),NULL);
                 }
                 else{
-                        cout<<endl<<"pid "<<pid<<endl<<"gpid  "<<gpid<<endl;
+                        syscall(SYS_close, fd[1]);
+                        syscall(SYS_close, fd[0]);
                         syscall(SYS_wait4, pid, NULL, NULL, NULL);
                         syscall(SYS_wait4, gpid, NULL, NULL, NULL);
                 }
         }
 }
+
 
 
 void python()
