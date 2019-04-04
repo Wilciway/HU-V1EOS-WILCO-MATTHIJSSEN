@@ -1,0 +1,3 @@
+mkdir -p ./Afbeeldingen/
+find $1 -name "*.png" -exec mv {} ./Afbeeldingen \;
+find $1 -name "*.jpeg" -exec mv {} ./Afbeeldingen \;
