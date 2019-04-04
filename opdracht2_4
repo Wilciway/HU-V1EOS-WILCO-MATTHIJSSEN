@@ -1,5 +1,5 @@
 
-touch log.txt
+
 echo "" > $1/log.txt
 
 for i in $1/*  ; do
