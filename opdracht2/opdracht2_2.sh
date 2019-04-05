@@ -1,0 +1,23 @@
+for i
+do
+case $i in
+        png)
+        echo "png"
+        ls $1*.png -l | wc -l
+        ;;
+        pdf)
+        echo "pdf"
+        ls $1*.pdf -l | wc -l
+        ;;
+        doc)
+        echo "doc"
+        ls $1*.doc -l | wc -l
+        ;;
+        jpg)
+        echo "jpg"
+        ls $1*.jpg -l | wc -l
+        ;;
+        *)
+        ;;
+        esac
+done

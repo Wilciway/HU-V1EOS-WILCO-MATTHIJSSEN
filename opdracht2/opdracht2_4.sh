@@ -1,0 +1,11 @@
+echo "" > $1/log.txt
+
+for i in $1/*  ; do
+        if $2 $i;
+        then
+        echo "$2 $i succeeded" >> $1/log.txt
+
+        else
+        echo "$2 $i failed" >> $1/log.txt
+        fi
+done
